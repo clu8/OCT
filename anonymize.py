@@ -31,7 +31,7 @@ def anonymize():
 
                     for file in os.listdir(visit_dir_path):
                         patient_id_2, *rest = file.split('_')
-                        assert patient_id == patient_id_2
+                        assert patient_id == patient_id_2 or patient_id_2.startswith('Case')
                         new_file = '_'.join([case_dir] + rest)
 
                         old_path = os.path.join(visit_dir_path, file)
