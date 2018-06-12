@@ -7,8 +7,8 @@ import shutil
 
 RAW_DATA_PATH = '../mount'
 
-NEG_DIRS = ['Non referral1', 'Non Referral2', 'NonReferral3']
-POS_DIRS = ['Referral1', 'Referral2', 'Referral3']
+NEG_DIRS = ['Non referral1', 'Non Referral2', 'NonReferral3', 'NonReferral4']
+POS_DIRS = ['Referral1', 'Referral2', 'Referral3', 'Referral4']
 
 def anonymize():
     for label, top_dirs in [('pos', POS_DIRS), ('neg', NEG_DIRS)]:
