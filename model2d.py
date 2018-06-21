@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import torchvision
 
 
 class Flatten(nn.Module):
@@ -33,6 +34,35 @@ class SimpleSliceNet(nn.Module):
     
     def forward(self, slice_):
         return self.cnn(slice_).squeeze(dim=1)
+    
+    def train_step(self, slice_, targets):
+        logits = self(slice_)
+        loss = self.loss_fn(logits, targets)
+        
+        self.optimizer.zero_grad()
+        loss.backward()
+        self.optimizer.step()
+        
+        return loss
+
+class SliceResnet(nn.Module):
+    def __init__(self, finetune=True):
+        super(SliceResnet, self).__init__()
+        
+        self.net = torchvision.models.resnet18(pretrained=True)
+        if not finetune:
+            for param in self.net.parameters():
+                param.requires_grad = False
+        
+        # Parameters of newly constructed modules have requires_grad=True by default
+        num_ftrs = self.net.fc.in_features
+        self.net.fc = nn.Linear(num_ftrs, 1)
+        
+        self.optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, self.net.parameters()))
+        self.loss_fn = nn.BCEWithLogitsLoss()
+    
+    def forward(self, slice_):
+        return self.net(slice_).squeeze(dim=1)
     
     def train_step(self, slice_, targets):
         logits = self(slice_)

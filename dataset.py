@@ -46,3 +46,34 @@ class OctRandomSliceDataset(Dataset):
         slice_ = cube[:, :, slice_idx]
         img = Image.fromarray(slice_)
         return torch.tensor(self.transforms(img)), torch.tensor(label)
+    
+class OctSliceDataset(Dataset):
+    """
+    Dataset which loads an already-processed dataset of slices. 
+    """
+    def __init__(self, data_dir, triple_channels=False, transforms=[]):
+        pos_dir = os.path.join(data_dir, 'pos')
+        pos_paths = [os.path.join(pos_dir, f) for f in os.listdir(pos_dir)]
+        
+        neg_dir = os.path.join(data_dir, 'neg')
+        neg_paths = [os.path.join(neg_dir, f) for f in os.listdir(neg_dir)]
+        
+        self.slice_paths = pos_paths + neg_paths
+        self.labels = [1.] * len(pos_paths) + [0.] * len(neg_paths)
+        
+        transforms = transforms + [
+            T.Resize([200, 200]),
+            T.ToTensor()
+        ]
+        if triple_channels:
+            transforms.append(T.Lambda(lambda s: s.repeat(3, 1, 1)))
+        self.transforms = T.Compose(transforms)
+        
+    def __len__(self):
+        return len(self.labels)
+    
+    def __getitem__(self, i):
+        slice_ = np.load(self.slice_paths[i])
+        label = self.labels[i]
+        img = Image.fromarray(slice_)
+        return self.transforms(img), torch.tensor(label)
