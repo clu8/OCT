@@ -13,7 +13,7 @@ import torchvision.transforms as T
 
 import constants
 from dataset import OctSliceDataset
-from model2d import SliceResnet
+import model2d
 from training import evaluate, train_epoch
 
 
@@ -34,12 +34,12 @@ def train(num_epochs=10, eval_every=3, verbose=True):
     print(f'Starting training')
     
     train_dataset = OctSliceDataset(train_dir, triple_channels=True, transforms=[
-        # T.RandomApply([
-        #     T.RandomCrop(size=[896, 175])
-        # ], 0.5),
-        T.RandomVerticalFlip(p=0.5),
-        T.RandomHorizontalFlip(p=0.5),
-        T.RandomRotation(degrees=10, resample=False, expand=False, center=None),
+#         T.RandomApply([
+#             T.RandomCrop(size=(175, 896))
+#         ], 0.5),
+#         T.RandomVerticalFlip(p=0.5),
+#         T.RandomHorizontalFlip(p=0.5),
+#         T.RandomRotation(degrees=10, resample=False, expand=False, center=None),
     ])
     val_dataset = OctSliceDataset(val_dir, triple_channels=True)
     test_dataset = OctSliceDataset(test_dir, triple_channels=True)
@@ -48,7 +48,7 @@ def train(num_epochs=10, eval_every=3, verbose=True):
     val_loader = DataLoader(val_dataset, batch_size=8, shuffle=False, num_workers=8)
     test_loader = DataLoader(test_dataset, batch_size=8, shuffle=False, num_workers=8)
 
-    net = SliceResnet(finetune=True).to(device)
+    net = model2d.SliceDensenet201(finetune=True).to(device)
 
     if verbose: print('------ Evaluating ------')
     evaluate(net, val_loader, device, verbose)
@@ -63,4 +63,5 @@ def train(num_epochs=10, eval_every=3, verbose=True):
     return train_loss, val_loss, auprc, auroc
 
 if __name__ == '__main__':
-    train()
+    train(num_epochs=30)
+

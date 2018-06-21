@@ -25,14 +25,12 @@ class OctRandomSliceDataset(Dataset):
         
         self.cube_paths = pos_paths + neg_paths
         self.labels = [1.] * len(pos_paths) + [0.] * len(neg_paths)
+        print(f'Number of cubes: {len(self.labels)}')
         
         self.transforms = T.Compose([
             T.Resize([200, 200]),
             T.ToTensor()
         ])
-        
-        assert len(self.labels) == len(self.cube_paths)
-        print(f'Number of cubes: {len(self.labels)}')
     
     def __len__(self):
         return len(self.labels)
@@ -60,9 +58,10 @@ class OctSliceDataset(Dataset):
         
         self.slice_paths = pos_paths + neg_paths
         self.labels = [1.] * len(pos_paths) + [0.] * len(neg_paths)
+        print(f'Number of slices: {len(self.labels)}')
         
         transforms = transforms + [
-            T.Resize([200, 200]),
+            T.Resize([224, 224]),
             T.ToTensor()
         ]
         if triple_channels:
