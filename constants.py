@@ -1,5 +1,6 @@
 RAW_DATA_PATH = '../mount'
-PROCESSED_DATA_PATH = '../oct-data'
+# PROCESSED_DATA_PATH = '../oct-data'
+PROCESSED_DATA_PATH = '../oct-data-6'
 CUBES_FOLDER = 'cubes'
 MODELS_PATH = '../models'
 
