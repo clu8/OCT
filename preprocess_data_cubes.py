@@ -13,11 +13,11 @@ import constants
 def case_to_split(case):
     h = hash(case) % 10
     if h == 0:
-        return constants.SPLITS[0] # train
+        return constants.SPLITS[2] # test
     elif h == 1:
         return constants.SPLITS[1] # val
     else:
-        return constants.SPLITS[2] # test
+        return constants.SPLITS[0] # train
 
 def img_to_np(path):
     dtype = np.uint8
