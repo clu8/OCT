@@ -29,20 +29,21 @@ train_dir = os.path.join(constants.PROCESSED_DATA_PATH, slices_dir, 'train')
 val_dir = os.path.join(constants.PROCESSED_DATA_PATH, slices_dir, 'val')
 test_dir = os.path.join(constants.PROCESSED_DATA_PATH, slices_dir, 'test')
 
-pretrained_name = 'densenet201_noaug_0'
-experiment_name = 'densenet201_pretrain_augs_0'
+# pretrained_name = 'densenet201_noaug_0'
+pretrained_name = None
+experiment_name = 'densenet201_data6_noaug_0'
 
 def train(num_epochs=10, eval_every=1, verbose=True):
     print('==============')
     print(f'Starting training')
     
     train_dataset = OctSliceDataset(train_dir, triple_channels=True, transforms=[
-#         T.RandomApply([
-#             T.RandomCrop(size=(175, 896))
-#         ], 0.5),
 #         T.RandomVerticalFlip(p=0.5),
 #         T.RandomHorizontalFlip(p=0.5),
-#         T.RandomRotation(degrees=10, resample=False, expand=False, center=None),
+#         T.RandomApply([
+#             T.RandomCrop(size=(175, 896))
+#         ], 0.25),
+#         T.ColorJitter(0.5, 0.5, 0.5, 0.1)
     ])
     val_dataset = OctSliceDataset(val_dir, triple_channels=True)
     test_dataset = OctSliceDataset(test_dir, triple_channels=True)
